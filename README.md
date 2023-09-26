@@ -54,15 +54,6 @@ How do you need to achieve this task?
 
 You need to use Spring Boot Framework for core functionalities along with Hibernate for carrying out database operations.
 Use Swagger to list all your APIs (optional but a very good plus point)
-Things to submit:
-The expected output is the zip form of the code, shared via a Google drive folder. It should also contain the postman collection that you have used to test the application i.e. created doctors, patients and suggestion API.
-Please upload the drive link in this form, you don’t need to email us. Ensure that the drive folder is shared. [Form Link: https://forms.gle/AT86trr8S6kMH7B4A]
-
-Timeline
-
-You have to submit this assignment within 3 days from the time you received the Screening Test Result mail from our side.
-You will be informed of the results within 5 working days after your submission via email.
-If you pass the selection test, you will be invited for the next and final round.
 
 
 Use Postman to hit the APIs and these are main postman links:
