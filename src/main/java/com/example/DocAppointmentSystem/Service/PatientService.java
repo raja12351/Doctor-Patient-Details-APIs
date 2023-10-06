@@ -70,7 +70,7 @@ public class PatientService {
 
         List<Doctor> list1 = new ArrayList<>();
         for(Doctor doctor : doctorList){
-            if(doctor.getSpeciality().toString().equals(speciality.toString()) && doctor.getCity().toString().equals(city)){
+            if(doctor.getSpeciality().toString().equals(speciality.toString())){
                 list1.add(doctor);
             }
         }
