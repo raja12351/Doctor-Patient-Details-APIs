@@ -1,13 +1,18 @@
 package com.example.DocAppointmentSystem.Service;
 
 import com.example.DocAppointmentSystem.DTOs.RequestDto.DoctorDto;
+import com.example.DocAppointmentSystem.DTOs.ResponseDto.Appointments;
 import com.example.DocAppointmentSystem.Exceptions.*;
+import com.example.DocAppointmentSystem.Models.Appointment;
 import com.example.DocAppointmentSystem.Models.Doctor;
 import com.example.DocAppointmentSystem.Repository.DoctorRepository;
+import com.example.DocAppointmentSystem.Transformers.AppointmentTransformer;
 import com.example.DocAppointmentSystem.Transformers.DoctorTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +55,27 @@ public class DoctorService {
         doctorRepository.delete(doctor);
 
         return "Doctor is deleted from the database successfully.";
+    }
+
+    public List<Appointments> getAllAppointments(Integer doctorId) throws NoDoctorException{
+        Optional<Doctor> doctorOptional = doctorRepository.findById(doctorId);
+
+        if(doctorOptional.isEmpty()){
+            throw new NoDoctorException("No doctor present with given id");
+        }
+
+        Doctor doctor = doctorOptional.get();
+
+        List<Appointment> appointmentList = doctor.getAppointmentList();
+
+        List<Appointments> returnList = new ArrayList<>();
+
+        for(Appointment appointment : appointmentList){
+            Appointments appointments = AppointmentTransformer.convertEntityToDto(appointment);
+
+            returnList.add(appointments);
+        }
+
+        return returnList;
     }
 }

@@ -28,4 +28,6 @@ public class Patient {
 
     private String symptom;
 
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private Appointment appointment;
 }

@@ -51,7 +51,7 @@ public class PatientService {
         return "Patient is added to the database";
     }
 
-    public List<DoctorList> getDoctors(Integer patientId) throws PatientException, NoDoctorException, CityException{
+    public List<DoctorList> getDoctors(Integer patientId) throws PatientException, CityException, NoDoctorException {
         List<Doctor> doctorList = doctorRepository.findAll();
 
         Optional<Patient> patientOptional = patientRepository.findById(patientId);
@@ -68,33 +68,49 @@ public class PatientService {
         Disease disease = diseaseRepository.findByDiseaseName(symptom);
         Speciality speciality = disease.getSpeciality();
 
-        List<Doctor> list1 = new ArrayList<>();
-        for(Doctor doctor : doctorList){
-            if(doctor.getSpeciality().toString().equals(speciality.toString())){
-                list1.add(doctor);
-            }
-        }
-        if(list1.isEmpty()){
-            throw new NoDoctorException("There isn’t any doctor present at your location for your symptom");
-        }
+//        Checking for all the doctors available for given symptom
+        List<Doctor> listOfDoctors = requiredDoctors(doctorList, speciality);
 
-        List<Doctor> list2 = new ArrayList<>();
-        for(Doctor doctor : list1){
-            if(doctor.getCity().toString().equals(city)){
-                list2.add(doctor);
-            }
-        }
-        if(list2.isEmpty()){
-            throw new CityException("We are still waiting to expand to your location");
-        }
+//        Checking for all the specialist doctors available in the city
+        List<Doctor> doctorsInCity = doctorsInCity(listOfDoctors, city);
 
         List<DoctorList> returnlist = new ArrayList<>();
-        for(Doctor doctor : list2){
+        for(Doctor doctor : doctorsInCity){
             DoctorList doctorList1 = DoctorTransformer.convertEntityToDto(doctor);
             returnlist.add(doctorList1);
         }
 
         return returnlist;
+    }
+
+    private List<Doctor> doctorsInCity(List<Doctor> listOfDoctors, String city) throws CityException{
+        List<Doctor> doctorsAvailable = new ArrayList<>();
+
+        for(Doctor doctor : listOfDoctors){
+            if(doctor.getCity().toString().equals(city)){
+                doctorsAvailable.add(doctor);
+            }
+        }
+        if(doctorsAvailable.isEmpty()){
+            throw new CityException("We are still waiting to expand to your location");
+        }
+
+        return doctorsAvailable;
+    }
+
+    private List<Doctor> requiredDoctors(List<Doctor> doctorList, Speciality speciality) throws NoDoctorException{
+        List<Doctor> listOfDoctors = new ArrayList<>();
+
+        for(Doctor doctor : doctorList){
+            if(doctor.getSpeciality().toString().equals(speciality.toString())){
+                listOfDoctors.add(doctor);
+            }
+        }
+        if(listOfDoctors.isEmpty()){
+            throw new NoDoctorException("There isn’t any doctor present at your location for your symptom");
+        }
+
+        return listOfDoctors;
     }
 
     public String deletePatient(Integer patientId) throws PatientException{
